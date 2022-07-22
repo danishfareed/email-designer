@@ -8,8 +8,7 @@ import {
 import Footer from './containers/Footer';
 import Header from './containers/Header';
 import Home from './containers/Home';
-import About from './containers/About';
-import ContentLabelling from './containers/ContentLabelling';
+
 
 const MyRouter = () => {
   return (
@@ -18,8 +17,7 @@ const MyRouter = () => {
         <Header />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/content-labelling" element={<ContentLabelling />} />
+
             </Routes>
         <Footer />
         </BrowserRouter>
