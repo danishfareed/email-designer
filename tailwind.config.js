@@ -4,7 +4,14 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      sans: ["IBM Plex Mono", "monospace"],
+    },
+    extend: {
+      fontFamily: {
+        'sans': ['ui-monospace', 'SFMono-Regular'],
+      },
+    },
   },
   daisyui: {
     themes: [ "fantasy", "dracula"],

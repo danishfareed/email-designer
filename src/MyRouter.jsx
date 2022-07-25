@@ -8,7 +8,7 @@ import {
 import Footer from './containers/Footer';
 import Header from './containers/Header';
 import Home from './containers/Home';
-
+import Templates from './containers/Templates';
 
 const MyRouter = () => {
   return (
@@ -17,7 +17,7 @@ const MyRouter = () => {
         <Header />
             <Routes>
                 <Route path="/" element={<Home />} />
-
+                <Route path="/templates" element={<Templates />} />
             </Routes>
         <Footer />
         </BrowserRouter>

@@ -19,14 +19,14 @@ const Home = (props) => {
     setIsOpen(true)
   }
 
-  const { emailEditorRef, onLoad, onReady, options } = useContext(EmailEditorContext);
+  const { emailEditorRef, onLoad, onReady, options, isEditorReady } = useContext(EmailEditorContext);
   
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
       // console.log('exportHtml', html);
       setCode(html)
-      //console.log('design', design);
+      console.log('design', design);
       openModal();
       // alert("HTML Exported to console")
     });
@@ -98,6 +98,8 @@ const Home = (props) => {
       </>)
   }
 
+
+
   return (
     <>
     <div>
@@ -121,7 +123,7 @@ const Home = (props) => {
       </div>
     </section>
     </div>
-    {htmlCode()}
+    {isEditorReady && htmlCode()}
     </>
   )
 }
