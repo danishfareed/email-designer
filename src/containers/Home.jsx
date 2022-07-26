@@ -1,15 +1,18 @@
-import React, { useContext, Fragment, useState } from 'react';
+import React, { useContext, Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition,  } from '@headlessui/react'
 import EmailEditor from 'react-email-editor';
 import MonacoEditor from '@uiw/react-monacoeditor';
 import { render } from 'react-dom';
 import EmailEditorContext from './../context/EmailEditorContext';
+import { useSearchParams } from "react-router-dom";
 
 
 
 const Home = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [code, setCode] = useState(``);
+  const [searchParams] = useSearchParams();
+  const templateId = searchParams.get('templateId');
 
   function closeModal() {
     setIsOpen(false)
@@ -19,7 +22,16 @@ const Home = (props) => {
     setIsOpen(true)
   }
 
-  const { emailEditorRef, onLoad, onReady, options, isEditorReady } = useContext(EmailEditorContext);
+  const { emailEditorRef, onLoad, onReady, options, isEditorReady,setdefaultTemplateId } = useContext(EmailEditorContext);
+
+  /**below code to check templateid parameter start */
+  useEffect(() => {
+    if(templateId!=null){
+      setdefaultTemplateId(templateId);
+    }
+  }, [templateId])
+    /**below code to check templateid parameter end */
+
   
   const exportHtml = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
