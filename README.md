@@ -18,7 +18,9 @@ This project is made for demo & learning purpose, you can refer this repo to use
 
 Clone the project
 
-```yarn start
+```
+yarn start
+
 ```
 
 
