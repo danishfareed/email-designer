@@ -20,7 +20,6 @@ const [defaultTemplateId, setdefaultTemplateId] = useState(0);
       });
 
     if(status===200){
-      console.log("just data",data.data.StockTemplate.StockTemplatePages[0].design)
         return data.data.StockTemplate.StockTemplatePages[0].design;
     }else{
         return data;
@@ -30,6 +29,7 @@ const [defaultTemplateId, setdefaultTemplateId] = useState(0);
     const onLoad = () => {
       // editor instance is created
       // you can load your template here;
+      
       if(defaultTemplateId!=0 && defaultTemplateId!=null){
         getTemplate(defaultTemplateId).then(templateJson => {
           emailEditorRef.current.editor.loadDesign(templateJson);
@@ -41,11 +41,13 @@ const [defaultTemplateId, setdefaultTemplateId] = useState(0);
       setisEditorReady(true)
       editorThemeChanger()
       // editor is ready
+      autoSave()
     };
     
     useEffect(() => {
       if(isEditorReady){
         editorThemeChanger()
+        
       }
     }, [theme])
     
@@ -69,6 +71,21 @@ const [defaultTemplateId, setdefaultTemplateId] = useState(0);
           }
         });
       }
+    }
+
+    /**auto save content */
+    const autoSave = () =>{
+      emailEditorRef.current.editor.addEventListener('design:updated', function(updates) {
+        console.log(updates)
+        // Design is updated by the user
+        emailEditorRef.current.editor.exportHtml(function(data) {
+          const { design, html } = data;
+          // Save the json, or html here
+          console.log(design)
+          localStorage.setItem("autoSaveDesign", JSON.stringify(design));
+        })
+        
+      })
     }
 
     const options = {

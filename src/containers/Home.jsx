@@ -7,9 +7,10 @@ import EmailEditorContext from './../context/EmailEditorContext';
 import { useSearchParams } from "react-router-dom";
 
 
-
 const Home = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenLoadSavedDesignPopup, setIsOpenLoadSavedDesignPopup] = useState(false);
+  const [onlyLoadOnceSavedDesign, setonlyLoadOnceSavedDesign] = useState(true)
   const [code, setCode] = useState(``);
   const [searchParams] = useSearchParams();
   const templateId = searchParams.get('templateId');
@@ -22,6 +23,14 @@ const Home = (props) => {
     setIsOpen(true)
   }
 
+  function closeLoadSavedDesignPopup() {
+    setIsOpenLoadSavedDesignPopup(false)
+  }
+
+  function openLoadSavedDesignPopup() {
+    setIsOpenLoadSavedDesignPopup(true)
+  }
+
   const { emailEditorRef, onLoad, onReady, options, isEditorReady,setdefaultTemplateId } = useContext(EmailEditorContext);
 
   /**below code to check templateid parameter start */
@@ -31,6 +40,7 @@ const Home = (props) => {
     }
   }, [templateId])
     /**below code to check templateid parameter end */
+
 
   
   const exportHtml = () => {
@@ -44,6 +54,26 @@ const Home = (props) => {
     });
   };
 
+  /**continue where you left or start new - start*/
+  useEffect(() => {
+    if(onlyLoadOnceSavedDesign){
+      const autoSaveDesign = localStorage.getItem('autoSaveDesign');
+      if(autoSaveDesign!=null && templateId == null){
+        openLoadSavedDesignPopup();
+      }
+      setonlyLoadOnceSavedDesign(false);
+    }
+    
+  }, [])
+  
+  const loadSavedDesignInEditor = () => {
+    const autoSaveDesign = JSON.parse(localStorage.getItem('autoSaveDesign'));
+    isEditorReady && emailEditorRef.current.editor.loadDesign(autoSaveDesign);
+  };
+    /**continue where you left or start new - end*/
+
+
+  /**export html popup start */
   const htmlCode = () =>{
     return (<>
       <Transition appear show={isOpen} as={Fragment}>
@@ -109,13 +139,75 @@ const Home = (props) => {
       </Transition>
       </>)
   }
+    /**export html popup end */
 
+  /**continue where you left popup start */
+  const loadAutoSavedDesign = () =>{
+    return (<>
+      <Transition appear show={isOpenLoadSavedDesignPopup} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeLoadSavedDesignPopup}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-30" />
+          </Transition.Child>
+
+          {/* Full-screen scrollable container */}
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            {/* Container to center the panel */}
+            <div className="flex min-h-full items-center justify-center overflow-y-auto">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                {/* The actual dialog panel  */}
+                <Dialog.Panel className="mx-auto max-w-4xl transform overflow-hidden rounded-2xl bg-base-100 p-6 text-left align-middle shadow-xl transition-all ">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-xl font-medium text-center leading-6"
+                  >
+                    Do you want to continue where you left?
+                  </Dialog.Title>
+                  <div className="mt-2">
+
+                  </div>
+
+                  <div className="mt-4 flex justify-between">
+                  <button onClick={closeLoadSavedDesignPopup} className="btn btn-outline btn-primary">I'll start new</button>
+                  <button 
+                  onClick={() => {
+                    loadSavedDesignInEditor();
+                    closeLoadSavedDesignPopup();
+                  }} 
+                  className="btn btn-primary">Yes, I will</button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+      </>)
+  }
+    /**export html popup end */
 
 
   return (
     <>
     <div>
       <EmailEditor
+        
         ref={emailEditorRef}
         onLoad={onLoad}
         onReady={onReady}
@@ -125,17 +217,19 @@ const Home = (props) => {
 
     <section className="">
       <div className="flex justify-center py-8 px-4 mx-auto max-w-screen-2xl lg:py-16 lg:px-6">
-          <div className="form-control">
+          {/* <div className="form-control">
               <div className="input-group">
                 <input type="text" placeholder="Design Name" className="input input-bordered" />
                 <button className="btn btn-outline btn-primary">Save Design</button>
               </div>
-          </div>
+          </div> */}
           <button onClick={exportHtml} className="btn btn-primary ml-2">Export HTML</button>
       </div>
     </section>
     </div>
     {isEditorReady && htmlCode()}
+    {isEditorReady && loadAutoSavedDesign()}
+    
     </>
   )
 }
