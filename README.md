@@ -26,7 +26,7 @@ yarn start
 
 ## Tech Stack
 
-**Client:** React, TailwindCSS, DaisyUI
+**Client:** React, TailwindCSS, DaisyUI.
 
 
 ## Acknowledgements
